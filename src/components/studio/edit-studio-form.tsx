@@ -57,6 +57,9 @@ function getInitialForm(studio: Studio): StudioFormState {
 }
 
 export function EditStudioForm({ studio }: { studio: Studio }) {
+
+  // console.log("EditStudioForm studio bla bla bla:", studio);
+
   const router = useRouter();
   const [form, setForm] = React.useState(() => getInitialForm(studio));
   const [isSaving, setIsSaving] = React.useState(false);

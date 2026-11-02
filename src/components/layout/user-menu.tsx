@@ -27,7 +27,7 @@ export type HeaderUser = {
 const MENU_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/add-studio", label: "Add New Studio", icon: CirclePlus },
-  { href: "/dashboard/listings", label: "My Studio Listings", icon: Building2 },
+  { href: "/my-listings", label: "My Studio Listings", icon: Building2 },
   { href: "/dashboard/bookings", label: "My Bookings", icon: CalendarCheck },
 ];
 
