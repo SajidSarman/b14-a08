@@ -6,7 +6,15 @@ import { usePathname } from "next/navigation";
 import { cn } from "cn";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { UserMenu, type HeaderUser } from "@/components/layout/user-menu";
+import { MenuIcon } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -21,6 +29,7 @@ function isActive(pathname: string, href: string) {
 
 export function SiteHeader({ user }: { user?: HeaderUser | null }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
@@ -44,7 +53,7 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto hidden items-center gap-2 md:flex">
           {user ? (
             <UserMenu user={user} />
           ) : (
@@ -58,6 +67,74 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
             </>
           )}
         </div>
+
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+          <SheetTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto md:hidden"
+                aria-label="Open navigation menu"
+              />
+            }
+          >
+            <MenuIcon />
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[min(20rem,85vw)]">
+            <SheetHeader>
+              <SheetTitle>Navigation</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-1 px-4">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "rounded-lg px-3 py-2.5 text-sm transition-colors",
+                    isActive(pathname, link.href)
+                      ? "bg-primary/10 font-medium text-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="mt-auto flex flex-col gap-2 border-t p-4">
+              {user ? (
+                <UserMenu user={user} />
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href="/login"
+                        onClick={() => setMenuOpen(false)}
+                      />
+                    }
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href="/register"
+                        onClick={() => setMenuOpen(false)}
+                      />
+                    }
+                  >
+                    Register
+                  </Button>
+                </>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

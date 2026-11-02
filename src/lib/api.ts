@@ -9,16 +9,24 @@ export type Studio = {
   maxCapacity?: number;
   location: string;
   rating?: number;
+  reviewCount?: number;
   imageUrl?: string;
   images?: string[];
+  overview?: string;
+  amenities?: string[];
+  hostName?: string;
+  hostEmail?: string;
 };
 
 // The API may return a bare array or an object like { studios: [...] } — accept both.
 export async function fetchStudios(category?: string): Promise<Studio[]> {
+
   const res = await fetch(`${API_URL}/studios`, { cache: "no-store" });
+
   if (!res.ok) {
     throw new Error(`Server responded with ${res.status}`);
   }
+
   const data = (await res.json()) as Studio[] | { studios?: Studio[] };
   const studios = Array.isArray(data) ? data : (data.studios ?? []);
   return category
