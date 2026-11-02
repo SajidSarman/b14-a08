@@ -3,6 +3,7 @@ import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { Toaster } from "@/components/ui/toast";
 
 const josefinSans = Josefin_Sans({
   // variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${josefinSans.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <Toaster>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </Toaster>
       </body>
     </html>
   );

@@ -88,10 +88,10 @@ export function StudioDetails({ studio }: { studio: Studio }) {
             <img
               src={images[activeImage]}
               alt={`${studio.title} — photo ${activeImage + 1}`}
-              className="aspect-[16/9] max-h-[560px] w-full object-cover"
+              className="aspect-[16/9] max-h-[400px] w-full object-cover"
             />
           ) : (
-            <div className="flex aspect-[16/9] max-h-[560px] items-center justify-center bg-gradient-to-br from-muted to-secondary text-sm text-muted-foreground">
+            <div className="flex aspect-[16/9] max-h-[400px] items-center justify-center bg-gradient-to-br from-muted to-secondary text-sm text-muted-foreground">
               Photos coming soon
             </div>
           )}
