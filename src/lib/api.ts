@@ -19,6 +19,7 @@ export type Studio = {
   amenities?: string[];
   hostName?: string;
   hostEmail?: string;
+  ownerEmail?: string;
 };
 
 // The API may return a bare array or an object like { studios: [...] } — accept both.

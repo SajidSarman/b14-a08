@@ -78,6 +78,7 @@ export function StudioForm() {
       ...form,
       hostName: DEMO_USER.name,
       hostEmail: DEMO_USER.email,
+      ownerEmail: DEMO_USER.email,
       hourlyRate: Number(form.hourlyRate),
       securityDeposit: Number(form.securityDeposit || 0),
       maxCapacity: Number(form.maxCapacity),
