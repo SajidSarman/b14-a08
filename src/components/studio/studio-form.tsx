@@ -12,14 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-
-const CATEGORIES = [
-  { value: "photo-studio", label: "Photo Studio" },
-  { value: "film-stage", label: "Film Stage" },
-  { value: "podcast-lounge", label: "Podcast Lounge" },
-  { value: "music-suite", label: "Music Suite" },
-  { value: "workshop", label: "Workshop" },
-];
+import { CATEGORIES } from "@/lib/categories";
 
 const AMENITIES = [
   "Green Screen",

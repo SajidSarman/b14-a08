@@ -7,21 +7,14 @@ import {
   XIcon,
   YoutubeIcon,
 } from "@/components/social-icons";
+import { CATEGORIES } from "@/lib/categories";
 
 const QUICK_LINKS = [
   { href: "/", label: "Home" },
   { href: "/studios", label: "Explore Studios" },
   { href: "/how-it-works", label: "How It Works" },
   { href: "/about", label: "About Us" },
-  { href: "/studios/new", label: "Host Your Space" },
-];
-
-const CATEGORIES = [
-  { category: "photo", label: "Photo Studios" },
-  { category: "sound-stage", label: "Sound Stages" },
-  { category: "podcast", label: "Podcast Rooms" },
-  { category: "music", label: "Music Suites" },
-  { category: "art", label: "Art Workshops" },
+  { href: "/add-studio", label: "Host Your Space" },
 ];
 
 const SOCIALS = [
@@ -81,9 +74,9 @@ export function SiteFooter() {
             <h3 className="text-sm font-semibold">Popular Categories</h3>
             <ul className="mt-3 space-y-2">
               {CATEGORIES.map((category) => (
-                <li key={category.category}>
+                <li key={category.value}>
                   <Link
-                    href={`/studios?category=${category.category}`}
+                    href={`/studios?category=${category.value}`}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {category.label}
