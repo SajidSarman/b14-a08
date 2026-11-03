@@ -39,7 +39,7 @@ const SLIDES = [
 
 export function HeroSlider() {
   return (
-    <section aria-label="Featured creative spaces">
+    <section className="relative" aria-label="Featured creative spaces">
       <Carousel opts={{ loop: true }} className="group relative">
         <CarouselContent className="ml-0">
           {SLIDES.map((slide) => (
@@ -60,24 +60,6 @@ export function HeroSlider() {
                     <p className="max-w-xl text-base leading-7 text-white/85 sm:text-lg">
                       {slide.description}
                     </p>
-                    <div className="flex flex-wrap gap-3 pt-2">
-                      <Button
-                        size="lg"
-                        nativeButton={false}
-                        render={<Link href="/studios" />}
-                      >
-                        Explore Studios
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="border-white/70 bg-white/10 text-white hover:bg-white/20 hover:text-white"
-                        nativeButton={false}
-                        render={<Link href="/add-studio" />}
-                      >
-                        Host Your Space
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -87,6 +69,27 @@ export function HeroSlider() {
         <CarouselPrevious className="left-4 z-10 border-white/40 bg-black/30 text-white hover:bg-black/50 hover:text-white sm:left-8" />
         <CarouselNext className="right-4 z-10 border-white/40 bg-black/30 text-white hover:bg-black/50 hover:text-white sm:right-8" />
       </Carousel>
+      <div className="pointer-events-none absolute inset-x-0 bottom-10 z-20">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap gap-3 px-6 md:px-10">
+          <Button
+            size="lg"
+            className="pointer-events-auto"
+            nativeButton={false}
+            render={<Link href="/studios" />}
+          >
+            Explore Studios
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="pointer-events-auto border-white/70 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+            nativeButton={false}
+            render={<Link href="/add-studio" />}
+          >
+            Host Your Space
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }
