@@ -14,6 +14,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { UserMenu, type HeaderUser } from "@/components/layout/user-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { authClient } from "@/lib/auth-client";
 import { MenuIcon } from "lucide-react";
 
 const NAV_LINKS = [
@@ -27,9 +29,17 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
-export function SiteHeader({ user }: { user?: HeaderUser | null }) {
+export function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const { data: session, isPending } = authClient.useSession();
+  const user: HeaderUser | null = session?.user
+    ? {
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image ?? undefined,
+      }
+    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
@@ -54,7 +64,8 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 md:flex">
-          {user ? (
+          <ThemeToggle />
+          {isPending ? null : user ? (
             <UserMenu user={user} />
           ) : (
             <>
@@ -103,7 +114,10 @@ export function SiteHeader({ user }: { user?: HeaderUser | null }) {
               ))}
             </nav>
             <div className="mt-auto flex flex-col gap-2 border-t p-4">
-              {user ? (
+              <div className="flex justify-end">
+                <ThemeToggle />
+              </div>
+              {isPending ? null : user ? (
                 <UserMenu user={user} />
               ) : (
                 <>

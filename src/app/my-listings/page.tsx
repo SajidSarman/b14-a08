@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CameraIcon } from "lucide-react";
 import { MyListingsManager } from "@/components/studio/my-listings-manager";
 import { API_URL, type Studio } from "@/lib/api";
+import { getCurrentSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "My Studio Listings",
 };
 
-const DEMO_OWNER_EMAIL = "demo@studiospace.com";
-
-async function getMyStudios() {
+async function getMyStudios(ownerEmail: string) {
   const response = await fetch(`${API_URL}/studios`, { cache: "no-store" });
 
   if (!response.ok) {
@@ -25,15 +26,20 @@ async function getMyStudios() {
   const studios = Array.isArray(data) ? data : (data.studios ?? []);
   return studios.filter(
     (studio) =>
-      (studio.ownerEmail ?? studio.hostEmail) === DEMO_OWNER_EMAIL
+      (studio.ownerEmail ?? studio.hostEmail) === ownerEmail
   );
 }
 
-export default async function MyListingsPage() {
+async function MyListingsContent() {
+  const session = await getCurrentSession();
+  if (!session) {
+    redirect(`/login?callbackURL=${encodeURIComponent("/my-listings")}`);
+  }
+
   let studios: Studio[];
 
   try {
-    studios = await getMyStudios();
+    studios = await getMyStudios(session.user.email);
   } catch {
     return (
       <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
@@ -80,5 +86,19 @@ export default async function MyListingsPage() {
 
       <MyListingsManager initialStudios={studios} />
     </div>
+  );
+}
+
+export default function MyListingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
+          <p className="text-sm text-muted-foreground">Loading your listings...</p>
+        </div>
+      }
+    >
+      <MyListingsContent />
+    </Suspense>
   );
 }

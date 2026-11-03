@@ -14,7 +14,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
-import { API_URL, type Studio } from "@/lib/api";
+import type { Studio } from "@/lib/api";
 import { CATEGORIES } from "@/lib/categories";
 
 const AMENITIES = [
@@ -90,7 +90,7 @@ export function EditStudioForm({ studio }: { studio: Studio }) {
 
     try {
       const response = await fetch(
-        `${API_URL}/studios/${encodeURIComponent(studio._id)}`,
+        `/api/studios/${encodeURIComponent(studio._id)}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

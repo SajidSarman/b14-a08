@@ -1,18 +1,27 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { notFound, redirect } from "next/navigation";
 import { EditStudioForm } from "@/components/studio/edit-studio-form";
 import { API_URL, type Studio } from "@/lib/api";
+import { getCurrentSession } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "Edit Studio",
 };
 
-export default async function EditStudioPage({
+async function EditStudioContent({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const session = await getCurrentSession();
+  if (!session) {
+    redirect(
+      `/login?callbackURL=${encodeURIComponent(`/studios/edit/${id}`)}`
+    );
+  }
+
   const response = await fetch(
     `${API_URL}/studios/${encodeURIComponent(id)}`,
     { cache: "no-store" }
@@ -28,6 +37,27 @@ export default async function EditStudioPage({
   }
 
   const studio = (await response.json()) as Studio;
+  if ((studio.ownerEmail ?? studio.hostEmail) !== session.user.email) {
+    notFound();
+  }
 
   return <EditStudioForm studio={studio} />;
+}
+
+export default function EditStudioPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto w-full max-w-2xl px-4 py-12 md:py-16">
+          <p className="text-sm text-muted-foreground">Loading studio...</p>
+        </div>
+      }
+    >
+      <EditStudioContent params={params} />
+    </Suspense>
+  );
 }

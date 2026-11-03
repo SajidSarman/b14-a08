@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "@/components/ui/toast";
-import { API_URL, type Studio } from "@/lib/api";
+import type { Studio } from "@/lib/api";
 import { categoryLabel } from "@/lib/categories";
 
 
@@ -35,7 +35,7 @@ export function MyListingsManager({ initialStudios }: { initialStudios: Studio[]
 
     try {
       const response = await fetch(
-        `${API_URL}/studios/${encodeURIComponent(studioToDelete._id)}`,
+        `/api/studios/${encodeURIComponent(studioToDelete._id)}`,
         { method: "DELETE" }
       );
 

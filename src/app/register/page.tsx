@@ -6,5 +6,8 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  return <AuthForm mode="register" />;
+  const googleEnabled = Boolean(
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  );
+  return <AuthForm mode="register" googleEnabled={googleEnabled} />;
 }

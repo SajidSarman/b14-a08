@@ -3,6 +3,7 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -17,6 +18,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/components/ui/toast";
 
 export type HeaderUser = {
   name: string;
@@ -43,6 +46,25 @@ function initials(name: string) {
 export function UserMenu({ user }: { user: HeaderUser }) {
   const router = useRouter();
 
+  const handleSignOut = async () => {
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      toast.add({
+        title: "Sign out failed",
+        description:
+          error instanceof Error ? error.message : "Please try again.",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -60,10 +82,12 @@ export function UserMenu({ user }: { user: HeaderUser }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>
-          <p className="text-sm font-medium">{user.name}</p>
-          <p className="text-xs text-muted-foreground">{user.email}</p>
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <p className="text-sm font-medium">{user.name}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {MENU_ITEMS.map((item) => (
           <DropdownMenuItem
@@ -75,10 +99,9 @@ export function UserMenu({ user }: { user: HeaderUser }) {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
-          {/* TODO: sign out via server action once sessions are wired up */}
+        <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
           <LogOut />
-          Logout
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

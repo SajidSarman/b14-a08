@@ -13,6 +13,8 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/categories";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 const AMENITIES = [
   "Green Screen",
@@ -26,12 +28,6 @@ const AMENITIES = [
   "Air Conditioning",
   "Kitchenette",
 ];
-
-// TODO: replace with the logged-in user from the session once auth is wired
-const DEMO_USER = {
-  name: "Demo User",
-  email: "demo@studiospace.com",
-};
 
 const initialForm: StudioFormState = {
   title: "",
@@ -57,8 +53,15 @@ type StudioFormState = {
   overview: string;
 };
 
-export function StudioForm() {
+export function StudioForm({
+  user,
+}: {
+  user: { name: string; email: string };
+}) {
+  const router = useRouter();
   const [form, setForm] = React.useState<StudioFormState>(initialForm);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const update = (field: keyof StudioFormState, value: string | string[]) =>
     setForm((current) => ({ ...current, [field]: value }));
@@ -76,30 +79,48 @@ export function StudioForm() {
 
     const data = {
       ...form,
-      hostName: DEMO_USER.name,
-      hostEmail: DEMO_USER.email,
-      ownerEmail: DEMO_USER.email,
+      hostName: user.name,
+      hostEmail: user.email,
+      ownerEmail: user.email,
       hourlyRate: Number(form.hourlyRate),
       securityDeposit: Number(form.securityDeposit || 0),
       maxCapacity: Number(form.maxCapacity),
     };
 
-    const res = await fetch("http://localhost:5000/add-studio", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    setIsSubmitting(true);
+    setError("");
 
-    const serverResponse = await res.json();
+    try {
+      const response = await fetch("/api/studios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    // TODO: POST `data` to the Express API, then:
-    // toast.success("Studio added!") and router.push("/my-listings")
+      if (!response.ok) {
+        throw new Error(`The server responded with ${response.status}.`);
+      }
 
-    // console.log("Studio data:", data);
-    
-    console.log("Server response:", serverResponse);
+      toast.add({
+        title: "Studio added",
+        description: "Your listing has been created.",
+        type: "success",
+      });
+      router.push("/my-listings");
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error
+          ? `Unable to add this studio: ${submitError.message}`
+          : "Unable to add this studio. Please try again.";
+      setError(message);
+      toast.add({
+        title: "Studio could not be added",
+        description: message,
+        type: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // console.log(form) 
@@ -122,9 +143,8 @@ export function StudioForm() {
           <Label htmlFor="hostName">Your Name</Label>
           <Input
             id="hostName"
-            defaultValue={DEMO_USER.name}
+            value={user.name}
             readOnly
-            disabled
           />
         </div>
         <div className="grid gap-2">
@@ -132,9 +152,8 @@ export function StudioForm() {
           <Input
             id="hostEmail"
             type="email"
-            defaultValue={DEMO_USER.email}
+            value={user.email}
             readOnly
-            disabled
           />
         </div>
       </div>
@@ -263,8 +282,18 @@ export function StudioForm() {
         />
       </div>
 
-      <Button type="submit" className="w-full sm:w-auto sm:justify-self-end">
-        Add Studio
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        className="w-full sm:w-auto sm:justify-self-end"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Saving..." : "Add Studio"}
       </Button>
     </form>
   );
