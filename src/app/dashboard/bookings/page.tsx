@@ -1,14 +1,5 @@
-import { PlaceholderPage } from "@/components/placeholder-page";
+import { redirect } from "next/navigation";
 
-export const metadata = { title: "My Bookings" };
-
-export default function MyBookingsPage() {
-  return (
-    <PlaceholderPage
-      title="My Bookings"
-      message="Your upcoming and past bookings are coming soon."
-      backLabel="Back to Dashboard"
-      backHref="/dashboard"
-    />
-  );
+export default function DashboardBookingsPage() {
+  redirect("/my-bookings");
 }

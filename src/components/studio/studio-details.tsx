@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { categoryLabel } from "@/lib/categories";
 import type { Studio } from "@/lib/api";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 import {
   CalendarDaysIcon,
   CheckIcon,
@@ -41,19 +43,74 @@ function getInitials(name: string) {
 }
 
 export function StudioDetails({ studio }: { studio: Studio }) {
+  const router = useRouter();
   const images = getGalleryImages(studio);
   const [activeImage, setActiveImage] = React.useState(0);
   const [bookingOpen, setBookingOpen] = React.useState(false);
-  const [bookingNotice, setBookingNotice] = React.useState("");
+  const [bookingError, setBookingError] = React.useState("");
   const [duration, setDuration] = React.useState(2);
+  const [isBooking, setIsBooking] = React.useState(false);
   const hostName = studio.hostName || "Studio host";
   const estimatedTotal = studio.hourlyRate * duration;
 
-  function submitBooking(event: React.FormEvent<HTMLFormElement>) {
+  async function submitBooking(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBookingNotice(
-      "Booking requests aren't connected yet. Your dates haven't been submitted."
-    );
+    setBookingError("");
+
+    const formData = new FormData(event.currentTarget);
+    const date = String(formData.get("date") ?? "");
+    const startTime = String(formData.get("startTime") ?? "");
+    const guests = Number(formData.get("guests"));
+    const startDate = new Date(`${date}T${startTime}`);
+
+    if (Number.isNaN(startDate.getTime()) || startDate.getTime() <= Date.now()) {
+      setBookingError("Choose a booking time in the future.");
+      return;
+    }
+
+    setIsBooking(true);
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studioId: studio._id,
+          date,
+          startTime,
+          startAt: startDate.toISOString(),
+          duration,
+          guests,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = (await response.json().catch(() => null)) as
+          | { message?: string }
+          | null;
+        throw new Error(
+          errorBody?.message ?? `Booking request failed (${response.status}).`
+        );
+      }
+
+      toast.add({
+        title: "Booking requested",
+        description: "Your reservation is pending host confirmation.",
+        type: "success",
+      });
+      setBookingOpen(false);
+      router.push("/my-bookings");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Please try again.";
+      setBookingError(message);
+      toast.add({
+        title: "Could not request booking",
+        description: message,
+        type: "error",
+      });
+    } finally {
+      setIsBooking(false);
+    }
   }
 
   return (
@@ -267,7 +324,7 @@ export function StudioDetails({ studio }: { studio: Studio }) {
               type="button"
               className="mt-5 w-full"
               onClick={() => {
-                setBookingNotice("");
+                setBookingError("");
                 setBookingOpen(true);
               }}
             >
@@ -292,11 +349,11 @@ export function StudioDetails({ studio }: { studio: Studio }) {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 text-sm font-medium">
                 Date
-                <Input type="date" required />
+                <Input name="date" type="date" required />
               </label>
               <label className="grid gap-2 text-sm font-medium">
                 Start time
-                <Input type="time" required />
+                <Input name="startTime" type="time" required />
               </label>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -317,6 +374,7 @@ export function StudioDetails({ studio }: { studio: Studio }) {
               <label className="grid gap-2 text-sm font-medium">
                 Guests
                 <Input
+                  name="guests"
                   type="number"
                   min={1}
                   max={studio.maxCapacity}
@@ -341,15 +399,19 @@ export function StudioDetails({ studio }: { studio: Studio }) {
                 <span>${estimatedTotal + (studio.securityDeposit ?? 0)}</span>
               </div>
             </div>
-            {bookingNotice && (
-              <p role="status" className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-                {bookingNotice}
+            {bookingError && (
+              <p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                {bookingError}
               </p>
             )}
             <DialogFooter>
-              <Button type="submit" className="w-full sm:w-auto">
+              <Button
+                type="submit"
+                className="w-full sm:w-auto"
+                disabled={isBooking}
+              >
                 <CalendarDaysIcon />
-                Request booking
+                {isBooking ? "Sending request..." : "Request booking"}
               </Button>
             </DialogFooter>
           </form>

@@ -22,6 +22,30 @@ export type Studio = {
   ownerEmail?: string;
 };
 
+export type BookingStatus =
+  | "Pending"
+  | "Confirmed"
+  | "Completed"
+  | "Cancelled";
+
+export type Booking = {
+  _id: string;
+  studioId: string;
+  studioTitle: string;
+  studioImage?: string;
+  customerName: string;
+  customerEmail: string;
+  date: string;
+  startTime: string;
+  startAt: string;
+  endAt: string;
+  duration: number;
+  guests: number;
+  hourlyRate: number;
+  total: number;
+  status: BookingStatus;
+};
+
 // The API may return a bare array or an object like { studios: [...] } — accept both.
 export async function fetchStudios(category?: string): Promise<Studio[]> {
 
