@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Building2,
   CalendarCheck,
+  CalendarDays,
   CirclePlus,
   LayoutDashboard,
   LogOut,
@@ -31,6 +32,7 @@ const MENU_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/add-studio", label: "Add New Studio", icon: CirclePlus },
   { href: "/my-listings", label: "My Studio Listings", icon: Building2 },
+  { href: "/host-bookings", label: "Host Bookings", icon: CalendarDays },
   { href: "/my-bookings", label: "My Bookings", icon: CalendarCheck },
 ];
 

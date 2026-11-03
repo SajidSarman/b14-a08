@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import {
   ArrowRightIcon,
   Building2Icon,
+  CalendarCheckIcon,
   CalendarDaysIcon,
   CameraIcon,
   MapPinIcon,
@@ -85,7 +86,7 @@ async function DashboardContent() {
 
       <section
         aria-label="Dashboard overview"
-        className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
         <Card>
           <CardHeader>
@@ -109,15 +110,38 @@ async function DashboardContent() {
 
         <Card>
           <CardHeader>
-            <CardDescription>Your reservations</CardDescription>
+            <CardDescription>Manage reservations for your listings</CardDescription>
             <CardTitle className="flex items-center justify-between text-xl">
-              My bookings
+              Host bookings
               <CalendarDaysIcon className="size-5 text-muted-foreground" />
             </CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              View your reservation requests and their current status.
+              Review requests and confirm completed studio sessions.
+            </CardDescription>
+            <Button
+              variant="link"
+              className="mt-2 h-auto p-0"
+              nativeButton={false}
+              render={<Link href="/host-bookings" />}
+            >
+              Manage host bookings <ArrowRightIcon />
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Your reservations</CardDescription>
+            <CardTitle className="flex items-center justify-between text-xl">
+              My bookings
+              <CalendarCheckIcon className="size-5 text-muted-foreground" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription>
+              Check your booking requests and their current status.
             </CardDescription>
             <Button
               variant="link"
@@ -125,7 +149,7 @@ async function DashboardContent() {
               nativeButton={false}
               render={<Link href="/my-bookings" />}
             >
-              View bookings <ArrowRightIcon />
+              View my bookings <ArrowRightIcon />
             </Button>
           </CardContent>
         </Card>
