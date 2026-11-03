@@ -21,11 +21,12 @@ import { MenuIcon } from "lucide-react";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/studios", label: "Explore Studios" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/about", label: "About Us" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#about", label: "About Us" },
 ];
 
 function isActive(pathname: string, href: string) {
+  if (href.includes("#")) return false;
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
