@@ -12,8 +12,8 @@ import { CATEGORIES } from "@/lib/categories";
 const QUICK_LINKS = [
   { href: "/", label: "Home" },
   { href: "/studios", label: "Explore Studios" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/about", label: "About Us" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#about", label: "About Us" },
   { href: "/add-studio", label: "Host Your Space" },
 ];
 

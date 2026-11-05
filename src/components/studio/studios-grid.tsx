@@ -47,9 +47,9 @@ export async function StudiosGrid({
           <EmptyMedia variant="icon">
             <CameraIcon />
           </EmptyMedia>
-          <EmptyTitle>Can't load studios</EmptyTitle>
+          <EmptyTitle>Can&apos;t load studios</EmptyTitle>
           <EmptyDescription>
-            The studio server isn't responding right now. Please try again soon.
+            The studio server isn&apos;t responding right now. Please try again soon.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
@@ -80,8 +80,11 @@ export async function StudiosGrid({
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button nativeButton={false} render={<Link href="/add-studio" />}>
-            Add New Studio
+          <Button
+            nativeButton={false}
+            render={<Link href={category ? "/studios" : "/add-studio"} />}
+          >
+            {category ? "Browse all studios" : "Host your space"}
           </Button>
         </EmptyContent>
       </Empty>

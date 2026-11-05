@@ -12,7 +12,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Stack & layout
 
-- Single Next.js 16.4.3 app (App Router) with the `src/` layout. Route code lives in `src/app/`; the UI kit is pre-installed in `src/components/ui/` (~50 shadcn-style components), plus `src/hooks/` and `src/lib/`.
+- Single Next.js 16.4.3 app (App Router) with the `src/` layout. Studio-booking app ("StudioSpace"). Route code lives in `src/app/`; the UI kit is pre-installed in `src/components/ui/` (~60 shadcn-style components), plus `src/hooks/`, `src/lib/`, and domain components in `src/components/{auth,booking,home,layout}`.
+- Auth is **Better Auth + MongoDB** (`@better-auth/mongo-adapter`), config in `src/lib/auth.ts`. That module **throws at import time** if `MONGODB_URI`, `BETTER_AUTH_SECRET`, or `BETTER_AUTH_URL` is missing (Google `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` optional, both or neither — see `.env.local` and README). Restart the dev server after changing env vars.
+- Auth entrypoints: `src/lib/session.ts` (`getCurrentSession()` for server components/route handlers), `src/lib/auth-client.ts` (client), `src/lib/backend-auth.ts` (`getBackendAuthHeaders()` — mints a Bearer JWT via the `jwt()` plugin for calling the external backend).
+- **There is a separate backend API** not in this repo: route handlers under `src/app/api/*` validate input, auth-check via `getCurrentSession()`, then proxy to `${API_URL}` (default `http://localhost:5000`, from `.env.local`) with the Bearer token from `getBackendAuthHeaders()`. Shared types (`Studio`, `Booking`, `API_URL`) live in `src/lib/api.ts`. Studio/booking data mutations must go through that backend, not direct Mongo writes.
+- Auth-gated routes are guarded by `src/proxy.ts` (Next 16 renamed middleware → proxy: the file is `proxy.ts` with an exported `proxy()` + `config.matcher` — there is no `middleware.ts` in this version). Protected paths are listed in its matcher.
 - UI primitives come from **Base UI (`@base-ui/react`)**, not Radix — this is the shadcn "base-nova" style (see `components.json`). Check an existing `src/components/ui/*` file for the expected import/prop patterns before writing components; don't hand-roll primitives. Add new ones with `npx shadcn add <component>`.
 - `cn` is imported from the `cn` package (as the generated components do); the `@/*` path alias maps to `./src/*`.
 - Tailwind v4: all styling is CSS-first in `src/app/globals.css` (theme tokens, `@theme`, dark mode via `.dark` class). There is no `tailwind.config.*` file.
@@ -25,5 +29,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Toolchain quirks
 
 - **React Compiler is on** (`reactCompiler: true`). Don't add manual `useMemo`/`useCallback`/`memo` for performance; let the compiler handle it.
-- **`cacheComponents: true`**: uncached dynamic reads (fetch, `Date.now()`, `Math.random()`, request-dependent data) must sit behind a `<Suspense>` boundary or inside a `"use cache"` function, or the build/dev overlay errors. Caching guide: `node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md`.
+- `cacheComponents: false` and `partialPrefetching: false` are explicitly set in `next.config.ts` — dynamic reads (`fetch(..., { cache: "no-store" })`, request data) don't need `<Suspense>` gating, unlike a default Next 16 repo.
 - Turbopack is the bundler; Tailwind v4 is wired through `turbopack.rules` in `next.config.ts` — read `next.config.ts` before assuming missing Next features are absent.

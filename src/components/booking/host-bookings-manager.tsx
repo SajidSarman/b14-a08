@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { CalendarDaysIcon } from "lucide-react";
 import type { Booking, BookingStatus } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
+  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -90,6 +92,11 @@ export function HostBookingsManager({
             Customer booking requests for your listings will appear here.
           </EmptyDescription>
         </EmptyHeader>
+        <EmptyContent>
+          <Button nativeButton={false} render={<Link href="/my-listings" />}>
+            Manage my studios
+          </Button>
+        </EmptyContent>
       </Empty>
     );
   }

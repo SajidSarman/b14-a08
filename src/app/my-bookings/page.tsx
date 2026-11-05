@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { CalendarDaysIcon } from "lucide-react";
 import { MyBookingsManager } from "@/components/booking/my-bookings-manager";
+import { PageLoading } from "@/components/page-loading";
 import {
   Empty,
   EmptyDescription,
@@ -80,13 +81,7 @@ async function MyBookingsContent() {
 export default function MyBookingsPage() {
   return (
     <Suspense
-      fallback={
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
-          <p className="text-sm text-muted-foreground">
-            Loading your bookings...
-          </p>
-        </div>
-      }
+      fallback={<PageLoading label="Loading your bookings" />}
     >
       <MyBookingsContent />
     </Suspense>

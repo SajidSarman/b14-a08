@@ -11,6 +11,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
+import { PageLoading } from "@/components/page-loading";
 import { API_URL, type Studio } from "@/lib/api";
 import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
@@ -301,13 +302,7 @@ async function DashboardContent() {
 export default function DashboardPage() {
   return (
     <Suspense
-      fallback={
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
-          <p className="text-sm text-muted-foreground">
-            Loading your dashboard...
-          </p>
-        </div>
-      }
+      fallback={<PageLoading label="Loading your dashboard" />}
     >
       <DashboardContent />
     </Suspense>

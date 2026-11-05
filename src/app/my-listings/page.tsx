@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CameraIcon } from "lucide-react";
 import { MyListingsManager } from "@/components/studio/my-listings-manager";
+import { PageLoading } from "@/components/page-loading";
 import { API_URL, type Studio } from "@/lib/api";
 import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
@@ -96,11 +97,7 @@ async function MyListingsContent() {
 export default function MyListingsPage() {
   return (
     <Suspense
-      fallback={
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-12">
-          <p className="text-sm text-muted-foreground">Loading your listings...</p>
-        </div>
-      }
+      fallback={<PageLoading label="Loading your listings" />}
     >
       <MyListingsContent />
     </Suspense>

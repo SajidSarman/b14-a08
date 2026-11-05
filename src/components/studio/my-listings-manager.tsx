@@ -53,11 +53,16 @@ export function MyListingsManager({ initialStudios }: { initialStudios: Studio[]
         type: "success",
       });
     } catch (error) {
-      setDeleteError(
+      const message =
         error instanceof Error
           ? `Unable to delete this studio: ${error.message}`
-          : "Unable to delete this studio. Please try again."
-      );
+          : "Unable to delete this studio. Please try again.";
+      setDeleteError(message);
+      toast.add({
+        title: "Studio could not be deleted",
+        description: message,
+        type: "error",
+      });
     } finally {
       setIsDeleting(false);
     }

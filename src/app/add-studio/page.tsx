@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { PageLoading } from "@/components/page-loading";
 import { StudioForm } from "@/components/studio/studio-form";
 import { getCurrentSession } from "@/lib/session";
 
@@ -27,11 +28,7 @@ async function AddStudioContent() {
 export default function AddStudioPage() {
   return (
     <Suspense
-      fallback={
-        <div className="mx-auto w-full max-w-2xl px-4 py-12 md:py-16">
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        </div>
-      }
+      fallback={<PageLoading label="Preparing your studio form" />}
     >
       <AddStudioContent />
     </Suspense>

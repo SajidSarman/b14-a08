@@ -109,11 +109,16 @@ export function EditStudioForm({ studio }: { studio: Studio }) {
       });
       window.setTimeout(() => router.push("/my-listings"), 800);
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? `Unable to update this studio: ${submitError.message}`
-          : "Unable to update this studio. Please try again."
-      );
+          : "Unable to update this studio. Please try again.";
+      setError(message);
+      toast.add({
+        title: "Studio could not be updated",
+        description: message,
+        type: "error",
+      });
       setIsSaving(false);
     }
   };
