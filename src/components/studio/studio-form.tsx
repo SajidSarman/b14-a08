@@ -15,6 +15,7 @@ import {
 import { CATEGORIES } from "@/lib/categories";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
+import { StudioImageField } from "@/components/studio/studio-image-field";
 
 const AMENITIES = [
   "Green Screen",
@@ -61,6 +62,7 @@ export function StudioForm({
   const router = useRouter();
   const [form, setForm] = React.useState<StudioFormState>(initialForm);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isImageUploading, setIsImageUploading] = React.useState(false);
   const [error, setError] = React.useState("");
 
   const update = (field: keyof StudioFormState, value: string | string[]) =>
@@ -238,19 +240,12 @@ export function StudioForm({
         />
       </div>
 
-      <div className="grid gap-2">
-        <Label htmlFor="imageUrl">Image URL</Label>
-        <Input
-          id="imageUrl"
-          type="url"
-          placeholder="https://i.ibb.co/your-studio-photo.jpg"
-          value={form.imageUrl}
-          onChange={(event) => update("imageUrl", event.target.value)}
-        />
-        <p className="text-xs text-muted-foreground">
-          Paste a direct image URL — imgbb upload comes with the image-upload step.
-        </p>
-      </div>
+      <StudioImageField
+        imageUrl={form.imageUrl}
+        onImageUrlChange={(value) => update("imageUrl", value)}
+        isUploading={isImageUploading}
+        onUploadingChange={setIsImageUploading}
+      />
 
       <fieldset className="grid gap-3">
         <legend className="text-sm font-medium">Amenities</legend>
@@ -291,9 +286,13 @@ export function StudioForm({
       <Button
         type="submit"
         className="w-full sm:w-auto sm:justify-self-end"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isImageUploading}
       >
-        {isSubmitting ? "Saving..." : "Add Studio"}
+        {isImageUploading
+          ? "Uploading image..."
+          : isSubmitting
+            ? "Saving..."
+            : "Add Studio"}
       </Button>
     </form>
   );

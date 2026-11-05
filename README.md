@@ -1,35 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudioSpace - B14-A08 - Frontend
 
-## Getting Started
+StudioSpace is a marketplace for finding and booking creative studios, while
+helping hosts showcase and manage their spaces.
+Explore spaces for photography, music, podcasts, and other creative projects.
 
-First, run the development server:
+## Live Link
+https://studiospace-b14-a08-s-sarman.vercel.app/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Backend Repository
+https://github.com/SajidSarman/b14-a08-server
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**FrontEnd:** Next.js (App Router), React, TypeScript, Tailwind CSS, Base UI
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Authentication & Authorization:** Better Auth, MongoDB adapter, JWT
+
+**BackEnd:** Express.js, MongoDB, JavaScript
+
+## Key Features
+
+- Browse studio listings by category and view studio details
+- Create, update, and delete your own studio listings
+- Add studio photos to listings
+- Request bookings and view your bookings
+- Manage booking requests and update their status as a host
+- Sign in with email and password, or Google when configured
 
 ## Authentication Setup
 
-Email/password authentication uses Better Auth with MongoDB. Add these values to
-`.env.local` in the project root:
+Add the required environment variables to `.env.local` in the project root:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017
+MONGODB_URI=your-mongodb-connection-string
 BETTER_AUTH_SECRET=replace-with-a-long-random-secret
 BETTER_AUTH_URL=http://localhost:3000
+IMGBB_API_KEY=your-imgbb-api-key
 ```
+
+`MONGODB_URI` is used by Better Auth. Configure the backend's MongoDB
+connection separately in the backend environment.
+
+Studio images are uploaded from the Next.js app to ImgBB using
+`IMGBB_API_KEY`; the key stays on the server and must not use a `NEXT_PUBLIC_`
+prefix. To keep uploaded images with a listing, the backend's studio create and
+update handlers must accept and save the `imageUrl` field in MongoDB. MongoDB
+stores the ImgBB URL, not the image file. Set `IMGBB_API_KEY` in your deployment
+environment as well as locally.
 
 Google sign-in is optional. To enable it, add the OAuth client credentials:
 
@@ -37,23 +54,3 @@ Google sign-in is optional. To enable it, add the OAuth client credentials:
 GOOGLE_CLIENT_ID=your-google-oauth-client-id
 GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
 ```
-
-Set the Google OAuth authorized redirect URI to
-`http://localhost:3000/api/auth/callback/google` for local development. Use the
-equivalent production app URL when deploying. Restart the Next.js server after
-changing environment variables. Do not commit `.env.local` or its secrets.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

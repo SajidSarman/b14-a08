@@ -16,6 +16,7 @@ import {
 import { toast } from "@/components/ui/toast";
 import type { Studio } from "@/lib/api";
 import { CATEGORIES } from "@/lib/categories";
+import { StudioImageField } from "@/components/studio/studio-image-field";
 
 const AMENITIES = [
   "Green Screen",
@@ -63,6 +64,7 @@ export function EditStudioForm({ studio }: { studio: Studio }) {
   const router = useRouter();
   const [form, setForm] = React.useState(() => getInitialForm(studio));
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isImageUploading, setIsImageUploading] = React.useState(false);
   const [error, setError] = React.useState("");
 
   const update = (field: keyof StudioFormState, value: string | string[]) =>
@@ -234,19 +236,12 @@ export function EditStudioForm({ studio }: { studio: Studio }) {
         />
       </div>
 
-      <div className="grid gap-2">
-        <Label htmlFor="imageUrl">Image URL</Label>
-        <Input
-          id="imageUrl"
-          type="url"
-          placeholder="https://i.ibb.co/your-studio-photo.jpg"
-          value={form.imageUrl}
-          onChange={(event) => update("imageUrl", event.target.value)}
-        />
-        <p className="text-xs text-muted-foreground">
-          Paste a direct image URL.
-        </p>
-      </div>
+      <StudioImageField
+        imageUrl={form.imageUrl}
+        onImageUrlChange={(value) => update("imageUrl", value)}
+        isUploading={isImageUploading}
+        onUploadingChange={setIsImageUploading}
+      />
 
       <fieldset className="grid gap-3">
         <legend className="text-sm font-medium">Amenities</legend>
@@ -287,9 +282,13 @@ export function EditStudioForm({ studio }: { studio: Studio }) {
       <Button
         type="submit"
         className="w-full sm:w-auto sm:justify-self-end"
-        disabled={isSaving}
+        disabled={isSaving || isImageUploading}
       >
-        {isSaving ? "Saving..." : "Save Changes"}
+        {isImageUploading
+          ? "Uploading image..."
+          : isSaving
+            ? "Saving..."
+            : "Save Changes"}
       </Button>
     </form>
   );

@@ -1,5 +1,6 @@
 import {
   CalendarCheckIcon,
+  ClockIcon,
   SearchIcon,
   SparklesIcon,
 } from "lucide-react";
@@ -7,19 +8,25 @@ import {
 const STEPS = [
   {
     icon: SearchIcon,
-    title: "Find your space",
+    title: "Discover Spaces",
     description:
       "Browse creative studios by category, location, and the features your project needs.",
   },
   {
-    icon: CalendarCheckIcon,
-    title: "Choose the details",
+    icon: ClockIcon,
+    title: "Select Shoot Hours",
     description:
-      "Compare the hourly rate, capacity, amenities, and studio information before you book.",
+      "Pick your date and the hourly slots that fit your shooting schedule.",
+  },
+  {
+    icon: CalendarCheckIcon,
+    title: "Book Instantly",
+    description:
+      "Confirm your booking in a few clicks with transparent hourly pricing.",
   },
   {
     icon: SparklesIcon,
-    title: "Make something great",
+    title: "Create & Produce",
     description:
       "Meet your host at the studio and focus on bringing your idea to life.",
   },
@@ -44,11 +51,10 @@ export function HowItWorks() {
             How It Works
           </h2>
           <p className="text-muted-foreground">
-            Find a place that fits your project, then book directly with the
-            host.
+            Four simple steps from discovery to production.
           </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-4">
           {STEPS.map(({ icon: Icon, title, description }, index) => (
             <article key={title} className="rounded-xl border bg-card p-6">
               <div className="mb-5 flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
