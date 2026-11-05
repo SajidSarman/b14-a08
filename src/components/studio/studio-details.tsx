@@ -15,7 +15,8 @@ import { Input } from "@/components/ui/input";
 import { categoryLabel } from "@/lib/categories";
 import type { Studio } from "@/lib/api";
 import { toast } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import {
   CalendarDaysIcon,
   CheckIcon,
@@ -44,6 +45,8 @@ function getInitials(name: string) {
 
 export function StudioDetails({ studio }: { studio: Studio }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { data: session, isPending: isSessionPending } = authClient.useSession();
   const images = getGalleryImages(studio);
   const [activeImage, setActiveImage] = React.useState(0);
   const [bookingOpen, setBookingOpen] = React.useState(false);
@@ -323,7 +326,15 @@ export function StudioDetails({ studio }: { studio: Studio }) {
             <Button
               type="button"
               className="mt-5 w-full"
+              disabled={isSessionPending}
               onClick={() => {
+                if (!session) {
+                  router.push(
+                    `/login?callbackURL=${encodeURIComponent(pathname)}`
+                  );
+                  return;
+                }
+
                 setBookingError("");
                 setBookingOpen(true);
               }}

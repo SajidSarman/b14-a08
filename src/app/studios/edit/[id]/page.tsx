@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { EditStudioForm } from "@/components/studio/edit-studio-form";
 import { API_URL, type Studio } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 export const metadata: Metadata = {
@@ -24,7 +25,10 @@ async function EditStudioContent({
 
   const response = await fetch(
     `${API_URL}/studios/${encodeURIComponent(id)}`,
-    { cache: "no-store" }
+    {
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
 
   if (response.status === 404) {

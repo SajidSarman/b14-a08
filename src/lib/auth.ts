@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { jwt } from "better-auth/plugins";
 
 function requiredEnv(name: string) {
   const value = process.env[name];
@@ -46,6 +47,7 @@ export const auth = betterAuth({
     minPasswordLength: 6,
     maxPasswordLength: 128,
   },
+
   hooks: {
     before: createAuthMiddleware(async (context) => {
       if (context.path !== "/sign-up/email") {
@@ -80,4 +82,15 @@ export const auth = betterAuth({
         },
       }
     : {}),
+
+  plugins: [jwt()],
+  session: {
+    cookieCache: {
+      enabled: true,
+      strategy: 'jwt',
+      maxAge: 7 * 24 * 60 * 60,
+
+    }
+  }
+  
 });

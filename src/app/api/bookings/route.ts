@@ -1,4 +1,5 @@
 import { API_URL, type Studio } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -22,7 +23,10 @@ export async function GET() {
 
   const response = await fetch(
     `${API_URL}/bookings?customerEmail=${encodeURIComponent(session.user.email)}`,
-    { cache: "no-store" }
+    {
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
   return forwardResponse(response);
 }
@@ -68,7 +72,10 @@ export async function POST(request: Request) {
 
   const studioResponse = await fetch(
     `${API_URL}/studios/${encodeURIComponent(studioId)}`,
-    { cache: "no-store" }
+    {
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
   if (studioResponse.status === 404) {
     return Response.json({ message: "Studio not found." }, { status: 404 });
@@ -93,7 +100,10 @@ export async function POST(request: Request) {
   ).toISOString();
   const response = await fetch(`${API_URL}/bookings`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      ...(await getBackendAuthHeaders()),
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       studioId,
       studioTitle: studio.title,

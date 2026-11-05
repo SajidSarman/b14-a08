@@ -6,6 +6,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { CameraIcon } from "lucide-react";
 import { MyListingsManager } from "@/components/studio/my-listings-manager";
 import { API_URL, type Studio } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 };
 
 async function getMyStudios(ownerEmail: string) {
-  const response = await fetch(`${API_URL}/studios`, { cache: "no-store" });
+  const response = await fetch(`${API_URL}/studios`, {
+    headers: await getBackendAuthHeaders(),
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     throw new Error(

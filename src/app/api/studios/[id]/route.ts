@@ -1,4 +1,5 @@
 import { API_URL, type Studio } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 type RouteContext = {
@@ -34,7 +35,10 @@ async function getOwnedStudio(id: string) {
 
   const response = await fetch(
     `${API_URL}/studios/${encodeURIComponent(id)}`,
-    { cache: "no-store" }
+    {
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
   if (response.status === 404) {
     return {
@@ -103,7 +107,10 @@ export async function PUT(request: Request, { params }: RouteContext) {
     `${API_URL}/studios/${encodeURIComponent(id)}`,
     {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...(await getBackendAuthHeaders()),
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(updateData),
       cache: "no-store",
     }
@@ -120,7 +127,11 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
 
   const response = await fetch(
     `${API_URL}/studios/${encodeURIComponent(id)}`,
-    { method: "DELETE", cache: "no-store" }
+    {
+      method: "DELETE",
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
   return forwardResponse(response);
 }

@@ -1,4 +1,5 @@
 import { API_URL } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 export async function PATCH(
@@ -15,7 +16,10 @@ export async function PATCH(
     `${API_URL}/bookings/${encodeURIComponent(id)}`,
     {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...(await getBackendAuthHeaders()),
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         customerEmail: session.user.email,
         status: "Cancelled",

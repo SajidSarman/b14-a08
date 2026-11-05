@@ -11,6 +11,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { API_URL, type Booking } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 export const metadata: Metadata = {
@@ -27,7 +28,10 @@ async function MyBookingsContent() {
   try {
     const response = await fetch(
       `${API_URL}/bookings?customerEmail=${encodeURIComponent(session.user.email)}`,
-      { cache: "no-store" }
+      {
+        headers: await getBackendAuthHeaders(),
+        cache: "no-store",
+      }
     );
     if (!response.ok) {
       throw new Error(`Booking server responded with ${response.status}`);

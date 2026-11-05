@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { API_URL, type Studio } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +36,10 @@ export const metadata: Metadata = {
 };
 
 async function getOwnerStudios(ownerEmail: string) {
-  const response = await fetch(`${API_URL}/studios`, { cache: "no-store" });
+  const response = await fetch(`${API_URL}/studios`, {
+    headers: await getBackendAuthHeaders(),
+    cache: "no-store",
+  });
   if (!response.ok) {
     throw new Error(`Studio server responded with ${response.status}`);
   }

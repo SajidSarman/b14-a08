@@ -1,4 +1,5 @@
 import { API_URL } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 export async function GET() {
@@ -9,7 +10,10 @@ export async function GET() {
 
   const response = await fetch(
     `${API_URL}/bookings?hostEmail=${encodeURIComponent(session.user.email)}`,
-    { cache: "no-store" }
+    {
+      headers: await getBackendAuthHeaders(),
+      cache: "no-store",
+    }
   );
 
   return new Response(response.body, {

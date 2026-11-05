@@ -1,4 +1,5 @@
 import { API_URL } from "@/lib/api";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import { getCurrentSession } from "@/lib/session";
 
 const STUDIO_FIELDS = [
@@ -41,7 +42,10 @@ export async function POST(request: Request) {
   );
   const response = await fetch(`${API_URL}/add-studio`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      ...(await getBackendAuthHeaders()),
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       ...studioData,
       hostName: session.user.name,
